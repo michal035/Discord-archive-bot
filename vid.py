@@ -44,5 +44,9 @@ while(cap.isOpened()):
                 break
         else:
             break
+
+my_clip = mp.VideoFileClip(r"vid1.mp4")
+my_clip.audio.write_audiofile(out_video)
+
 cap.release()
 cv2.destroyAllWindows()

@@ -5,7 +5,7 @@ import moviepy.editor as mp
 
 
 file = "vid2.mp4"
-name = file[0]
+name = file.split(".")[0]
 c = 50
 
 
@@ -43,8 +43,3 @@ my_clip = mp.VideoFileClip(file)
 audio_clip = f"{name}_audio.mp3"
 my_clip.audio.write_audiofile(audio_clip)
 
-
-audio = mp.AudioFileClip(audio_clip)
-video1 = mp.VideoFileClip(out_video)
-final = video1.set_audio(audio)
-final.write_videofile(f"{name} output.mp4",codec= 'mpeg4' ,audio_codec='libvorbis')
