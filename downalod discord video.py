@@ -6,6 +6,8 @@ req = requests.get(downloadUrl)
 
 bytes = int(req.headers['Content-Length'])
 megabyte = float(bytes/1000000)
+
+
 print(megabyte)
 print(req.headers)
 
@@ -31,4 +33,4 @@ def download_file(url, filename=''):
 
 
 
-#download_file(downloadUrl, '')
+download_file(downloadUrl, '')

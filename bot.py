@@ -52,6 +52,43 @@ def download_file(url, downloadUrl, filename=''):
         return None
 
 
+@bot.command()
+async def keyword(ctx, *, word: str):
+    channel = bot.get_channel(841776407344709666)
+    messages = await ctx.channel.history(limit=200).flatten()
+
+    for msg in messages:
+        if word in msg.content:
+            print(msg.jump_url)
+            ctx.send(msg)
+
+"""
+@bot.command()
+async def cc(ctx):
+    messages = ctx.history(limit=10).flatten()
+    contents = []
+
+    for message in messages:
+        contents.append(message.content)
+
+    print(contents)
+
+
+
+@bot.command()
+async def find(ctx, *, phrase:str):
+    print("e")
+    if not (phrase):
+        return await bot.send("Please enter a phrase and days")
+        
+    if  phrase:
+        messages = await bot.channel.history(limit=10, oldest_first=True).flatten()
+        for message in messages:
+            if phrase in message.content:
+                print(message)
+    else:
+        await ctx.send("please enter the number of days wanted")
+"""
 
 @bot.event
 async def on_message(message):
