@@ -19,7 +19,7 @@ client = commands.Bot(command_prefix = '!')
 
 @client.event
 async def on_ready():
-    await client.change_presence(activity=discord.Game(name="Test"))
+    await client.change_presence(activity=discord.Game(name="Memes go brrrr"))
     print("Bot is ready!")
 
 
@@ -45,7 +45,7 @@ def download_file(url, downloadUrl, filename=''):
             pass
         else:
             with requests.get(url) as req:
-                with open(filename, 'wb') as f:
+                with open(f"memes/{filename}", 'wb') as f:
                     for chunk in req.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
@@ -69,7 +69,7 @@ async def download_all(ctx):
             r = requests.get(url, stream=True)
             imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
 
-            with open(imageName, 'wb') as out_file:
+            with open(f"memes/imageName", 'wb') as out_file:
                 print('Saving image: ' + imageName)
                 shutil.copyfileobj(r.raw, out_file)
         
@@ -82,11 +82,11 @@ async def download_all(ctx):
 
             
             filename = req.url[the_url.rfind('/')+1:]
-            if megabyte > 10:
+            if megabyte > 20:
                 pass
             else:
                 with requests.get(the_url) as reqq:
-                    with open(filename, 'wb') as f:
+                    with open(f"memes/imageName", 'wb') as f:
                         for chunk in reqq.iter_content(chunk_size=8192):
                             if chunk:
                                 f.write(chunk)
@@ -97,31 +97,30 @@ async def download_all(ctx):
 
     print(counter)
 
-
-async def c(ctx, *, message: str):
-    await ctx.send(message)
+@client.command()
+async def d(ctx, *, message: str):
+    #await ctx.send(message)
     if True:
-        
-        whole_message = str(message.content).split(" ")
-        print(whole_message)
+        whole_message = message.split(" ")
+        #print(whole_message)
         
         try:
             whole_message.remove('')
         except:
             pass
         
-        user = whole_message[0]
-        tag = whole_message[1]
+
+        tag = whole_message[0]
         
         try:
-            message_its_self = whole_message[2]
+            message_its_self = whole_message[1]
         except:
             tag = "None"
-            message_its_self = whole_message[1]
+            message_its_self = whole_message[0]
 
 
         print(message_its_self)
-        await message.channel.send('yep')
+        await ctx.channel.send('yep')
 
         if tag == "t":
             pass
