@@ -1,6 +1,6 @@
 import requests
 
-downloadUrl = 'https://media.discordapp.net/attachments/478996456766963723/993384880257892452/NewTrain1.png?width=809&height=647'
+downloadUrl = ''
  
 req = requests.get(downloadUrl)
 
@@ -34,3 +34,7 @@ def download_file(url, filename=''):
 
 
 download_file(downloadUrl, '')
+
+
+
+
