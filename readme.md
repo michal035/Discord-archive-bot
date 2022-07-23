@@ -1,4 +1,4 @@
-Jest to bot, który po dodaniu, bot może archivować, duże ilość filmików i zdjęć. Można również archiwiować konkretne pliki. 
+Jest to bot, który po dodaniu, może archivować duże ilość filmików i zdjęć. Można również archiwiować konkretne pliki. 
 Ztworzyłem tego bota z myślą, żeby było hostowany na moim raspberrypi i zapisywał pliki na zewnętrznym dysku. W przyszłościu chciałbym powiększyć 
 jego funkcjonaloność o kompresowanie zapisynwaych plików. 
 
