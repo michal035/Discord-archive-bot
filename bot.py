@@ -24,10 +24,6 @@ async def on_ready():
 
 
 
-@client.command()
-async def love(ctx):
-    await ctx.send(f"❤️ <@{ctx.author.id}>")
-
 
 def download_file(url, downloadUrl, filename=''):
     
@@ -63,7 +59,7 @@ def download_file(url, downloadUrl, filename=''):
 
 @client.command()
 async def download_all(ctx):
-    messages = await ctx.channel.history(limit=200).flatten()
+    messages = await ctx.channel.history(limit=1000).flatten()
 
     counter = 0
     for msg in messages:
@@ -147,5 +143,74 @@ async def d(ctx, *, message: str):
         else:
             download_file(message_its_self,message_its_self, '')
 
+
+@client.command()
+async def download_all_new(ctx):
+    messages = await ctx.channel.history(limit=300).flatten()
+
+    counter = 0
+    for msg in messages:
+        #print(msg.content) #.jump_url
+        counter += 1 
+        
+        try:
+            text = msg.content
+        except:
+            pass
+        
+        if text[0:1] == "!d":
+            pass
+        elif text == "!download_all":
+            break
+        else:
+
+            if msg.attachments:
+                url = msg.attachments[0]
+            
+                try:
+                    r = requests.get(url, stream=True)
+                    imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
+
+                    with open(f"memes/{imageName}", 'wb') as out_file:
+                        print('Saving image: ' + imageName)
+                        shutil.copyfileobj(r.raw, out_file)
+            
+                except:
+                    print("file error")
+        
+            elif msg.content[0:26] == "https://cdn.discordapp.com":
+                the_url = msg.content
+            
+                try:
+                    req = requests.get(the_url)
+
+                    bytes = int(req.headers['Content-Length'])
+                    megabyte = float(bytes/1000000)
+
+            
+                    filename = req.url[the_url.rfind('/')+1:]
+                    if megabyte > 20:
+                        pass
+                    else:
+                        with requests.get(the_url) as reqq:
+                            with open(f"memes/{filename}", 'wb') as f:
+                                for chunk in reqq.iter_content(chunk_size=8192):
+                                    if chunk:
+                                        f.write(chunk)
+                            print('Saving vid: ' + filename)
+            
+                except:
+                    print("file error")
+
+                    
+            else:
+                pass
+
+    print(counter)
+
+
+@client.command()
+async def love(ctx):
+    await ctx.send(f"❤️ <@{ctx.author.id}>")
 
 client.run(TOKEN)
