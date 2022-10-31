@@ -208,6 +208,18 @@ async def download_all_new(ctx):
 
     print(counter)
 
+    
+@client.command()
+async def get_random_meme(ctx):
+    path = os.path.abspath(os.getcwd())
+    new_path = f"{path}/memes"
+    
+    array = os.listdir(new_path)
+    random_file = array[random.randint(0,len(array))]
+    final_path = f"{new_path}/{random_file}"
+    #await ctx.send(final_path)
+    await ctx.send('Here you go', file=discord.File(final_path))
+  
 
 @client.command()
 async def love(ctx):
