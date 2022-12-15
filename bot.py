@@ -160,7 +160,7 @@ async def download_all_new(ctx):
         
         if text[0:1] == "!d":
             pass
-        elif text == "!download_all" or text == "!download_all_new":
+        elif (counter != 1 and (text == "!download_all" or text == "!download_all_new")):
             break
         else:
 
