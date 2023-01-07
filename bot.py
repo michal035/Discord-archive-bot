@@ -1,3 +1,4 @@
+from typing import final
 import discord 
 from discord.ext import commands
 import os
@@ -5,6 +6,7 @@ import random
 import requests
 import shutil
 import uuid
+import re
 
 
 with open("token.txt") as f:
@@ -15,11 +17,17 @@ with open("token.txt") as f:
 TOKEN = the_line
 
 
-client = commands.Bot(command_prefix = '!')
+client = commands.Bot(command_prefix = '!', owner_id = 637356960513130526)
+
+
 
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name="Memes go brrrr"))
+    
+    await download_all_new(ch="931672775037419520")
+    await download_all_new(ch="841778927776825364")
+    
     print("Bot is ready!")
 
 
@@ -55,6 +63,22 @@ def download_file(url, downloadUrl, filename=''):
 
     except:
         print("file error")
+
+
+
+
+@client.command()
+async def get_random_meme(ctx):
+    path = os.path.abspath(os.getcwd())
+    new_path = f"{path}/memes"
+    
+    array = os.listdir(new_path)
+    random_file = array[random.randint(0,len(array))]
+    final_path = f"{new_path}/{random_file}"
+    #await ctx.send(final_path)
+    await ctx.send('Here you go', file=discord.File(final_path))
+
+
 
 
 @client.command()
@@ -144,9 +168,20 @@ async def d(ctx, *, message: str):
             download_file(message_its_self,message_its_self, '')
 
 
+
+
 @client.command()
-async def download_all_new(ctx):
-    messages = await ctx.channel.history(limit=300).flatten()
+async def download_all_new(ctx="",ch=""):
+    
+
+    is_this_automatic_download = False
+
+    if ch == "":
+        messages = await ctx.channel.history(limit=300).flatten()
+    else:
+        channel = client.get_channel(int(ch))
+        messages = await channel.history(limit=300).flatten()
+        is_this_automatic_download = True
 
     counter = 0
     for msg in messages:
@@ -160,24 +195,24 @@ async def download_all_new(ctx):
         
         if text[0:1] == "!d":
             pass
+        elif is_this_automatic_download == True and (text == "!download_all" or text == "!download_all_new"):
+            break
         elif (counter != 1 and (text == "!download_all" or text == "!download_all_new")):
             break
         else:
-
             if msg.attachments:
                 url = msg.attachments[0]
-            
+                
                 try:
                     r = requests.get(url, stream=True)
-                    imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
-
+                    imageName = str(uuid.uuid4()) + '.jpg'      
                     with open(f"memes/{imageName}", 'wb') as out_file:
                         print('Saving image: ' + imageName)
                         shutil.copyfileobj(r.raw, out_file)
             
                 except:
                     print("file error")
-        
+
             elif msg.content[0:26] == "https://cdn.discordapp.com":
                 the_url = msg.content
             
@@ -187,7 +222,6 @@ async def download_all_new(ctx):
                     bytes = int(req.headers['Content-Length'])
                     megabyte = float(bytes/1000000)
 
-            
                     filename = req.url[the_url.rfind('/')+1:]
                     if megabyte > 20:
                         pass
@@ -208,21 +242,23 @@ async def download_all_new(ctx):
 
     print(counter)
 
-    
+
 @client.command()
-async def get_random_meme(ctx):
-    path = os.path.abspath(os.getcwd())
-    new_path = f"{path}/memes"
-    
-    array = os.listdir(new_path)
-    random_file = array[random.randint(0,len(array))]
-    final_path = f"{new_path}/{random_file}"
-    #await ctx.send(final_path)
-    await ctx.send('Here you go', file=discord.File(final_path))
-  
+async def temp(ctx):
+    if str(ctx.message.author.id) == "637356960513130526":
+        res = os.popen("vcgencmd measure_temp").readline()
+        temp = re.findall("\d+\.\d+", res)[0]
+        await ctx.send(f"{temp}")
+    else:
+        await ctx.send("You don't have power to do so")
+
 
 @client.command()
 async def love(ctx):
     await ctx.send(f"❤️ <@{ctx.author.id}>")
+    await ctx.send(f"{ctx.message.author.id}")
+    await ctx.send(f"{ctx.message.author.id}")
+
+
 
 client.run(TOKEN)
