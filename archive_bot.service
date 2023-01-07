@@ -1,0 +1,15 @@
+[Unit]
+Description=ROT13 archive_bot service
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RuntimeMaxSec=2d
+User=
+ExecStart= /usr/bin/python3 bot.py
+WorkingDirectory= 
+
+[Install]
+WantedBy=multi-user.target
+
