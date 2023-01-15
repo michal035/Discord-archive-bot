@@ -27,7 +27,14 @@ async def on_ready():
     
     await download_all_new(ch="931672775037419520")
     await download_all_new(ch="841778927776825364")
-    
+   
+
+    channel = client.get_channel(931672775037419520)
+    channel2 = client.get_channel(841778927776825364)
+
+    await channel.send('scheduled backup done')
+    await channel2.send('scheduled backup done')
+
     print("Bot is ready!")
 
 
@@ -81,9 +88,41 @@ async def get_random_meme(ctx):
 
 
 
+def downloading_vid(msg,optional=""):
+    
+    if optional == "":
+        the_url = msg.content
+    else:
+        the_url = msg
+            
+    try:
+        req = requests.get(the_url)
+
+        bytes = int(req.headers['Content-Length'])
+        megabyte = float(bytes/1000000)
+
+    
+        filename = req.url[the_url.rfind('/')+1:]
+        if megabyte > 20:
+            pass
+        else:
+            with requests.get(the_url) as reqq:
+                with open(f"memes/{filename}", 'wb') as f:
+                    for chunk in reqq.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                print('Saving vid: ' + filename)
+    
+    except:
+        print("file error")
+
+
+
+
 @client.command()
 async def download_all(ctx):
     messages = await ctx.channel.history(limit=1000).flatten()
+
 
     counter = 0
     for msg in messages:
@@ -91,43 +130,31 @@ async def download_all(ctx):
         counter += 1 
         if msg.attachments:
             url = msg.attachments[0]
-            
-            try:
-                r = requests.get(url, stream=True)
-                imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
+            print(url)
+            url2 = str(msg.attachments[0])[-3:]
+            if url2 == "mp4" or url2 == "mov":
+                downloading_vid(str(url),"b")
+                
+            else:
+                
+                print(str(url)[-3:])
+                try:
+                    r = requests.get(url, stream=True)
+                    imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
 
-                with open(f"memes/{imageName}", 'wb') as out_file:
-                    print('Saving image: ' + imageName)
-                    shutil.copyfileobj(r.raw, out_file)
+                    with open(f"memes/{imageName}", 'wb') as out_file:
+                        print('Saving image: ' + imageName)
+                        shutil.copyfileobj(r.raw, out_file)
+                
+                except:
+                        print("file error")
+                
             
-            except:
-                print("file error")
+            
         
         elif msg.content[0:26] == "https://cdn.discordapp.com":
-            the_url = msg.content
-            
-            try:
-                req = requests.get(the_url)
-
-                bytes = int(req.headers['Content-Length'])
-                megabyte = float(bytes/1000000)
-
-            
-                filename = req.url[the_url.rfind('/')+1:]
-                if megabyte > 20:
-                    pass
-                else:
-                    with requests.get(the_url) as reqq:
-                        with open(f"memes/{filename}", 'wb') as f:
-                            for chunk in reqq.iter_content(chunk_size=8192):
-                                if chunk:
-                                    f.write(chunk)
-                        print('Saving vid: ' + filename)
-            
-            except:
-                print("file error")
-
-                    
+            downloading_vid(msg)
+     
         else:
             pass
 
@@ -195,6 +222,8 @@ async def download_all_new(ctx="",ch=""):
         
         if text[0:1] == "!d":
             pass
+        elif text == "scheduled backup done":
+            break
         elif is_this_automatic_download == True and (text == "!download_all" or text == "!download_all_new"):
             break
         elif (counter != 1 and (text == "!download_all" or text == "!download_all_new")):
@@ -202,41 +231,30 @@ async def download_all_new(ctx="",ch=""):
         else:
             if msg.attachments:
                 url = msg.attachments[0]
-                
-                try:
-                    r = requests.get(url, stream=True)
-                    imageName = str(uuid.uuid4()) + '.jpg'      
-                    with open(f"memes/{imageName}", 'wb') as out_file:
-                        print('Saving image: ' + imageName)
-                        shutil.copyfileobj(r.raw, out_file)
-            
-                except:
-                    print("file error")
-
-            elif msg.content[0:26] == "https://cdn.discordapp.com":
-                the_url = msg.content
-            
-                try:
-                    req = requests.get(the_url)
-
-                    bytes = int(req.headers['Content-Length'])
-                    megabyte = float(bytes/1000000)
-
-                    filename = req.url[the_url.rfind('/')+1:]
-                    if megabyte > 20:
-                        pass
-                    else:
-                        with requests.get(the_url) as reqq:
-                            with open(f"memes/{filename}", 'wb') as f:
-                                for chunk in reqq.iter_content(chunk_size=8192):
-                                    if chunk:
-                                        f.write(chunk)
-                            print('Saving vid: ' + filename)
-            
-                except:
-                    print("file error")
-
+                print(url)
+                url2 = str(msg.attachments[0])[-3:]
+                if url2 == "mp4" or url2 == "mov":
+                    downloading_vid(str(url),"b")
                     
+                else:
+                    
+                    print(str(url)[-3:])
+                    try:
+                        r = requests.get(url, stream=True)
+                        imageName = str(uuid.uuid4()) + '.jpg'      # uuid creates random unique id to use for image names
+
+                        with open(f"memes/{imageName}", 'wb') as out_file:
+                            print('Saving image: ' + imageName)
+                            shutil.copyfileobj(r.raw, out_file)
+                    
+                    except:
+                            print("file error")
+                    
+                
+                
+            elif msg.content[0:26] == "https://cdn.discordapp.com":
+                downloading_vid(msg)
+     
             else:
                 pass
 
