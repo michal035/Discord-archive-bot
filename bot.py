@@ -7,14 +7,14 @@ import requests
 import shutil
 import uuid
 import re
+from configparser import ConfigParser
 
 
-with open("token.txt") as f:
-    file = f.readlines()
-    the_line = file[0]
+config = ConfigParser()
+config.read("config.ini")
 
 
-TOKEN = the_line
+TOKEN = config["config"]["token"]
 
 
 client = commands.Bot(command_prefix = '!', owner_id = 637356960513130526)
